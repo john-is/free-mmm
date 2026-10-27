@@ -1,0 +1,170 @@
+# ==============================================================================
+# macOS Memory Cleaner - Process Allowlist (whitelist.txt)
+# ==============================================================================
+# Rules for entries:
+#   - Empty lines and lines starting with '#' are ignored.
+#   - Exact process names match executable basenames (e.g. WindowServer, Terminal).
+#   - Path prefixes or wildcards match full command paths (e.g. /System/Library/*).
+#   - App bundle names match .app paths (e.g. Visual Studio Code).
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. CRITICAL KERNEL & INIT SYSTEM
+# WARNING: Terminating these triggers an immediate kernel panic or hard reboot!
+# ------------------------------------------------------------------------------
+kernel_task                 # PID 0: Darwin Mach microkernel
+launchd                     # PID 1: Root init and service supervisor. Panic if killed!
+diskarbitrationd            # Filesystem mount/unmount and APFS arbitration
+opendirectoryd              # Local directory service, user credentials, POSIX auth
+securityd                   # Apple Keychain, TLS certificates, authorization DB
+trustd                      # Code signature validation (AMFI) and trust evaluation
+notifyd                     # Core Darwin Mach IPC event notification server
+powerd                      # Thermal regulation, sleep/wake, battery and AC management
+kernelmanagerd              # KEXT and DriverKit extension daemon
+amfid                       # Apple Mobile File Integrity (binary signing)
+syspolicyd                  # System policy and Gatekeeper enforcement
+endpointsecurityd           # Apple Endpoint Security subsystem (respawns if killed)
+aslmanager                  # Apple System Log manager
+deviceinterfaced            # Apple Device Interface subsystem
+fseventsd                   # File system events daemon (disk watchers)
+logd                        # Apple unified logging daemon
+syslogd                     # System log daemon
+
+# ------------------------------------------------------------------------------
+# 2. DISPLAY SERVER & GUI SESSION MANAGERS
+# WARNING: Terminating WindowServer immediately crashes the Aqua GUI and logs out!
+# ------------------------------------------------------------------------------
+WindowServer                # Quartz/SkyLight display compositor. NEVER KILL!
+loginwindow                 # User session manager; killing logs you out immediately
+runningboardd               # Application lifecycle and state tracking daemon
+WindowManager               # macOS Stage Manager and window layout manager
+SkyLight                    # Quartz graphics framework support
+
+# ------------------------------------------------------------------------------
+# 3. ESSENTIAL HARDWARE, AUDIO & NETWORKING
+# ------------------------------------------------------------------------------
+coreaudiod                  # Core Audio HAL (killing causes audio crash and app hangs)
+bluetoothd                  # Bluetooth stack (killing disconnects keyboard and mouse)
+wifid                       # Wi-Fi link manager
+configd                     # Network configuration, IP routing and interface state
+mDNSResponder               # Bonjour & DNS resolution (killing breaks all DNS)
+mDNSResponderHelper         # DNS helper daemon
+usbd                        # USB subsystem daemon
+driverkit                   # Apple Silicon DriverKit services
+
+# ------------------------------------------------------------------------------
+# 4. ACTIVE TERMINALS, SHELLS & SESSIONS
+# (Prevents terminating the active terminal session running this script)
+# ------------------------------------------------------------------------------
+Terminal                    # Apple Terminal app
+iTerm2                      # iTerm2 terminal emulator
+iTerm                       # iTerm
+alacritty                   # Alacritty terminal
+kitty                       # Kitty terminal
+wezterm-gui                 # WezTerm GUI
+wezterm                     # WezTerm
+warp                        # Warp terminal
+bash                        # Bash shell
+zsh                         # Zsh shell
+sh                          # POSIX shell
+fish                        # Fish shell
+login                       # Terminal login process
+sshd                        # Secure Shell daemon (protects remote SSH connections)
+ssh                         # Outgoing SSH sessions
+tmux                        # Terminal multiplexer
+screen                      # Screen multiplexer
+
+# ------------------------------------------------------------------------------
+# 5. IDEs, EDITORS, RUNTIMES & LANGUAGE SERVERS
+# (Protect active development environments, extension hosts, and tooling)
+# ------------------------------------------------------------------------------
+Electron                    # Common runtime for modern desktop editors
+Antigravity IDE             # IDE environment
+language_server_macos_arm   # Language server / IDE assistant backend
+code                        # VS Code CLI / process
+Code                        # VS Code Application
+Cursor                      # Cursor editor
+cursor                      # Cursor CLI / process
+Zed                         # Zed editor
+zed                         # Zed CLI / process
+idea                        # IntelliJ IDEA
+pycharm                     # PyCharm
+sublime_text                # Sublime Text
+nvim                        # Neovim
+vim                         # Vim
+emacs                       # Emacs
+
+# Developer Runtimes, Package Managers & MCP Servers
+node                        # Node.js runtime (IDE extensions & language tooling)
+npm                         # Node package manager & npx runners
+deno                        # Deno runtime
+bun                         # Bun runtime
+git                         # Git version control
+java                        # Java runtime (IDE extension servers like SonarLint)
+chrome-devtools-mcp         # Chrome DevTools MCP server
+*mcp*                       # Model Context Protocol servers / plugins
+
+# Language Servers & Linters
+pyrefly                     # Python language server
+pyright                     # Pyright language server
+pylsp                       # Python LSP server
+ruff                        # Ruff Python linter/LSP
+mypy                        # Mypy type checker
+rust-analyzer               # Rust language server
+gopls                       # Go language server
+vtsls                       # TypeScript language server
+
+# ------------------------------------------------------------------------------
+# 6. CORE DESKTOP UI & SYSTEM SERVICES
+# ------------------------------------------------------------------------------
+Finder                      # macOS Desktop and file manager
+Dock                        # macOS Dock and Mission Control
+SystemUIServer              # Menu bar extra items and status indicators
+ControlCenter               # Control Center menu bar interface
+NotificationCenter          # System notifications manager
+
+# Essential GUI Session Microservices & Invariants (Must NEVER be killed)
+pboard                      # macOS Pasteboard server (Cmd+C / Cmd+V). Never kill!
+cfprefsd                    # CoreFoundation Preferences daemon (killing hangs apps)
+distnoted                   # Distributed Notification Center IPC bus (killing hangs apps)
+lsd                         # LaunchServices daemon (resolves app bundles and open commands)
+tccd                        # Transparency, Consent, and Control daemon (security permissions)
+secd                        # Security / Keychain daemon (credentials and secure storage)
+UserEventAgent              # Core user event dispatcher (system stalls if terminated)
+fontd                       # Font registration and rendering server
+fontworker                  # Font rendering helper
+AudioComponentRegistrar     # CoreAudio component registry
+com.apple.audio.*           # CoreAudio sandbox & driver helpers
+AUCrashHandlerService       # Audio unit crash handling
+imklaunchagent              # InputMethodKit launch agent (required for AppKit text input; killing/freezing hangs apps)
+ScopedBookmarkAgent         # Sandboxed security-scoped bookmark agent (required for file dialogs & access)
+bird                        # iCloud Drive file sync coordinator (required for NSDocument / document-based apps)
+fileproviderd               # macOS FileProvider daemon (required for Open/Save file dialogs & cloud storage)
+accountsd                   # Accounts database manager (required for system accounts & authentication)
+sharingd                    # AirDrop, Handoff, and Universal Clipboard daemon (required for clipboard/continuity)
+linkd                       # App Intents & Shortcuts link daemon (required for Automator & Shortcuts actions)
+syncdefaultsd               # SyncedDefaults cloud user settings daemon (required for Finder / system preferences)
+
+# ------------------------------------------------------------------------------
+# 7. AI / ML RUNTIMES & LOCAL INFERENCE
+# ------------------------------------------------------------------------------
+ollama                      # Ollama local inference server
+ollama_llama_server         # Ollama engine backend
+llama-cli                   # llama.cpp CLI runner
+llama-server                # llama.cpp server
+python                      # Python interpreter
+python3                     # Python 3 interpreter
+opencode                    # OpenCode AI coding agent CLI / TUI
+
+# ------------------------------------------------------------------------------
+# 8. SYSTEM DAEMON PATHS & SECURITY
+# ------------------------------------------------------------------------------
+/System/Library/*           # Apple native system frameworks and daemons
+/System/Applications/*      # Built-in macOS system utilities
+/usr/libexec/*              # Essential macOS helper daemons
+/usr/sbin/*                 # Essential system binaries
+XProtect                    # Apple malware scanner (SIP protected)
+XProtectPluginService       # Apple malware analyzer (SIP protected)
+ps                          # Process status scanner command itself
+tee                         # Standard I/O splitter for execution logging
+sed                         # Stream editor for ANSI log cleaning

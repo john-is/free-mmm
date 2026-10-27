@@ -1,0 +1,318 @@
+# ==============================================================================
+# macOS Memory Cleaner - Process Blacklist (blacklist.txt)
+# ==============================================================================
+# Processes in this file are targeted to reclaim memory and CPU cycles,
+# even if they match broad system path whitelists (like /System/Library/*).
+#
+# Rules:
+#   - Empty lines and lines starting with '#' are ignored.
+#   - Exact process names match executable basenames.
+#   - Path prefixes or wildcards match full command paths or names.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. SPOTLIGHT & METADATA INDEXING DAEMONS
+# (Heavy CPU & RAM consumers that crawl disk and index files in the background)
+# ------------------------------------------------------------------------------
+mds                         # Metadata Server (Spotlight coordinator)
+mds_stores                  # Metadata Search Stores (notorious for large RAM usage)
+mdworker                    # Spotlight file content indexing worker
+mdworker_shared             # Shared Spotlight metadata indexing worker
+corespotlightd              # CoreSpotlight indexer (apps, mail, messages, contacts)
+spotlightknowledged         # Spotlight knowledge graph & machine learning indexer
+Spotlight                   # Spotlight search GUI process
+SpotlightNetHelper          # Spotlight network & web search suggestion helper
+mdflagwriter                # Spotlight file attribute writer
+mdbulkimport                # Bulk metadata importer worker
+
+# ------------------------------------------------------------------------------
+# 2. SCREENSAVERS, WALLPAPERS & AERIAL ASSET DOWNLOADERS
+# (Consume significant RAM, GPU, and VRAM - especially dynamic 4K wallpapers)
+# ------------------------------------------------------------------------------
+ScreenSaverEngine           # Active macOS screensaver engine
+legacyScreenSaver           # Legacy third-party screensaver wrapper
+ScreenSaver                 # Screensaver background agent
+wallpaper                   # macOS dynamic video/aerial wallpaper renderer
+wallpaperexportd            # Wallpaper thumbnail and export daemon
+WallpaperVideoExtension     # Aerial video wallpaper extension
+WallpaperDynamicExtension   # Dynamic wallpaper rendering extension
+idleassetsd                 # Downloads 4K aerial wallpaper video assets in background
+
+# ------------------------------------------------------------------------------
+# 3. MEDIA ANALYZERS & PHOTO INDEXERS
+# (Background AI/ML daemons scanning photo libraries, video frames, and faces)
+# ------------------------------------------------------------------------------
+mediaanalysisd              # Media Analysis daemon (video OCR, visual search, object detection)
+photoanalysisd              # Photo Analysis daemon (computes Memories, People, Pet recognition)
+photolibraryd               # Photo Library database daemon
+cloudphotod                 # iCloud Photos background syncing and cloud assets downloader
+AudiovisualThumbnailExtension # Audio/video thumbnail renderer
+
+# ------------------------------------------------------------------------------
+# 4. BACKGROUND MACHINE LEARNING, SUGGESTIONS & KNOWLEDGE AGENTS
+# (Heuristics and indexing daemons parsing emails, messages, and user context)
+# ------------------------------------------------------------------------------
+suggestd                    # CoreSuggestions daemon (indexes Mail/Messages for events/contacts)
+CoreSuggestionsAgent        # Suggestions user agent
+knowledge-agent             # macOS local knowledge base & contextual graph daemon
+knowledgeconstructiond     # Knowledge base background graph constructor
+siriknowledged              # Siri knowledge graph daemon
+triald                      # Local ML trial model experiment daemon
+triald_system               # System-wide trial experimentation daemon
+parsecd                     # CoreParsec query suggestions daemon
+intelligenceplatformd      # Local intelligence platform graph daemon
+ContextStoreAgent           # User activity and contextual prediction engine
+coreduetd                   # CoreDuet user activity prediction daemon
+duetexpertd                 # Duet expert predictive heuristics daemon
+biomed                      # Biome stream storage daemon
+BiomeAgent                  # Biome user agent
+biomesyncd                  # Biome cross-device sync daemon
+naturallanguaged            # Natural language processing background engine
+
+# ------------------------------------------------------------------------------
+# 5. CLOUD SYNCHRONIZATION, CLOUDKIT & FILE PROVIDERS
+# (Background cloud daemons that trigger heavy indexing loops)
+# ------------------------------------------------------------------------------
+cloudd                      # CloudKit synchronization daemon
+FileProvider                # FileProvider service wrapper
+DFSFileProviderExtension    # Google Drive FileProvider plugin (causes fileproviderd high CPU)
+OneDriveLauncher            # Microsoft OneDrive background launcher
+SafariBookmarksSyncAgent    # Safari bookmarks cloud sync agent
+autofsd                     # Automount daemon (NFS and network automounter)
+swtransparencyd             # Software transparency verification daemon
+transparencyd               # Key transparency background logging daemon
+CloudSettingsSyncAgent      # macOS system settings cloud sync agent
+ProtectedCloudKeySyncing    # Protected cloud storage key synchronization
+protectedcloudkeysyncing    # Cloud key syncing helper
+cloudkeychainproxy3         # iCloud Keychain synchronization proxy
+sbd                         # CloudServices secure backup daemon
+
+# ------------------------------------------------------------------------------
+# 6. CONTACTS & ADDRESS BOOK MANAGERS
+# (Heavy SQLite indexing triggered on boot and by widgets; consumes ~90% CPU)
+# ------------------------------------------------------------------------------
+contactsd                   # Contacts database sync and lookup daemon
+AddressBookManager          # AddressBook helper and vCard cache manager
+AddressBookSourceSync       # AddressBook iCloud/CardDAV source synchronization helper
+calaccessd                  # Calendar store access daemon
+CallHistoryPluginHelper     # Phone/FaceTime call history helper
+CallHistorySyncHelper       # Call history iCloud sync daemon
+
+
+# ------------------------------------------------------------------------------
+# 7. EMAIL BACKGROUND DAEMONS
+# (Continuous background mail fetching and email attachment indexing)
+# ------------------------------------------------------------------------------
+maild                       # EmailDaemon background mail fetcher and indexer
+icloudmailagent             # iCloud Mail agent
+
+# ------------------------------------------------------------------------------
+# 8. DESKTOP WIDGETS & NOTIFICATION EXTENSIONS (~450 MB+ RAM combined)
+# (WidgetKit extensions spawned by chronod; wakes Contacts/Calendar daemons)
+# ------------------------------------------------------------------------------
+chronod                     # WidgetKit / ChronoCore subsystem coordinator
+*Widget*                    # Wildcard matching all macOS desktop & menu widgets
+*WidgetExtension*           # Wildcard matching widget extensions (.appex)
+ThemeWidgetControlViewService # Widget control rendering service
+WeatherWidget               # Weather desktop widget
+StocksWidget                # Stocks desktop widget
+CalendarWidgetExtension     # Calendar desktop widget
+RemindersWidgetExtension    # Reminders desktop widget
+WorldClockWidget            # World Clock desktop widget
+ScreenTimeWidgetExtension   # Screen Time desktop widget
+FindMyWidgetItems           # Find My items widget
+FindMyWidgetPeople          # Find My people widget
+HomeWidget                  # HomeKit desktop widget
+HomeEnergyWidgetsExtension  # Home energy widget
+ShortcutsWidgetExtension    # Shortcuts desktop widget
+Notes.WidgetExtension       # Notes desktop widget
+BatteriesAvocadoWidgetExtension # Battery level widget
+ExcelWidget_mac             # Microsoft Excel widget
+PodcastsWidget              # Podcasts desktop widget
+PhotosReliveWidget          # Photos Memories desktop widget
+PeopleWidget_macOSExtension # People desktop widget
+TipsWidgetExtension         # Tips desktop widget
+
+# ------------------------------------------------------------------------------
+# 9. SPEECH, SYNTHESIS, SIRI & APPLE INTELLIGENCE
+# (Heavy on-device speech/dictation models consuming ~250MB+ Unified Memory)
+# ------------------------------------------------------------------------------
+localspeechrecognition      # On-device speech recognition & dictation model
+assistantd                  # Siri assistant background daemon
+assistant_cdmd              # Siri Continuous Dialog Manager
+assistant_service           # Siri assistant service helper
+corespeechd                 # CoreSpeech voice trigger daemon
+corespeechd_system          # System CoreSpeech audio trigger daemon
+siriinferenced              # Siri local inference heuristics
+sirittsd                    # Siri text-to-speech engine
+siriactionsd                # Siri shortcuts action server
+intelligencecontextd        # Apple Intelligence contextual processor
+intelligenceflowd           # Apple Intelligence flow director
+generativeexperiencesd      # Apple Intelligence generative runtime
+modelmanagerd               # Apple Intelligence local model manager
+ModelCatalogAgent           # Apple Intelligence model catalog agent
+modelcatalogd               # Apple Intelligence model catalog daemon
+SELFIngestor                # Siri Event Logging Format telemetry ingestor
+*SELFIngestor*              # Wildcard matching all SELF telemetry extensions
+IFTranscriptSELFIngestor    # Intelligence Flow transcript ingestor
+BiomeSELFIngestor           # Biome event telemetry ingestor
+IFTelemetrySELFIngestor     # Intelligence Flow telemetry ingestor
+GMSSELFIngestor             # Generative Model Services telemetry ingestor
+MauiAUSP                    # Maui audio speech unit plugin
+SiriAUSP                    # Siri audio speech unit plugin
+KonaSynthesizer             # Kona voice synthesizer
+WardaSynthesizer_arm64      # Warda speech synthesizer (ARM64)
+WardaSynthesizer_x86_64     # Warda speech synthesizer (x86_64)
+MacinTalkAUSP               # MacinTalk speech unit plugin
+
+# ------------------------------------------------------------------------------
+# 10. SYSTEM TELEMETRY, ANALYTICS & LOGGERS
+# (Pure background diagnostic collectors and telemetry uploaders to Apple)
+# ------------------------------------------------------------------------------
+analyticsd                  # System-wide CoreAnalytics telemetry daemon
+analyticsagent              # Background user analytics reporter
+audioanalyticsd             # Audio subsystem telemetry daemon
+ecosystemanalyticsd         # Apple device ecosystem telemetry collector
+wifianalyticsd              # Wi-Fi network telemetry daemon
+inputanalyticsd             # Keyboard and input telemetry collector
+geoanalyticsd               # Geolocation telemetry reporting daemon
+usbctelemetryd              # USB-C and Thunderbolt telemetry collector
+CloudTelemetryService       # Cloud telemetry upload service
+UsageTrackingAgent          # Screen Time application usage tracking logger
+rtcreportingd               # Real-time communications telemetry daemon
+sysmond                     # System activity monitoring daemon
+diagnosticextensionsd       # Diagnostic extensions manager
+osanalyticshelper           # OS analytics crash and report helper
+awdd                        # Apple Wireless Diagnostics daemon
+
+# ------------------------------------------------------------------------------
+# 11. CONTINUITY, HANDOFF, HOMEKIT & SHARING
+# (Apple device mesh networking, AirDrop, and home automation daemons)
+# ------------------------------------------------------------------------------
+homed                       # Apple Home / HomeKit automation coordinator (~65 MB)
+homeenergyd                 # HomeKit energy metrics daemon
+heard                       # HearingCore / MFi hearing aid communication (~56 MB)
+routined                    # Significant locations & movement tracking daemon (~50 MB)
+callservicesd               # Phone call and FaceTime routing daemon (~44 MB)
+familycircled               # iCloud Family Sharing background manager (~44 MB)
+financed                    # FinanceKit / Wallet order tracking daemon (~21 MB)
+remindd                     # Reminders background sync daemon (~35 MB)
+itunescloudd                # Apple Music / iTunes Cloud Library daemon (~28 MB)
+replayd                     # Screen recording & ReplayKit daemon (~39 MB)
+AMPDeviceDiscoveryAgent     # iOS device discovery over USB/Wi-Fi
+sociallayerd                # Messages "Shared with You" link tracker
+findmylocateagent           # Find My location broadcast agent
+searchpartyuseragent        # Find My offline mesh networking agent
+findmydeviced               # Find My device daemon
+findmybeaconingd            # Find My Bluetooth beaconing daemon
+findmydevice-user-agent     # Find My device user agent
+rapportd                    # Companion device mesh communication daemon
+rapportd-user               # Rapport user session agent
+sidecar-relay               # iPad Sidecar display relay
+sidecar-hid-relay           # iPad Sidecar HID input relay
+screensharing               # macOS screen sharing daemon
+AirPlayUIAgent              # AirPlay UI menu agent
+AirPlayXPCHelper            # AirPlay media playback helper
+audioaccessoryd             # HomePod and AirPods accessory manager (~33 MB)
+
+# ------------------------------------------------------------------------------
+# 12. APP STORE, COMMERCE & HARDWARE ACCESSORIES
+# ------------------------------------------------------------------------------
+appstoreagent               # Mac App Store background update check agent
+commerce                    # Mac App Store commerce daemon
+storekitagent               # StoreKit in-app purchase coordinator
+askpermissiond              # Family "Ask to Buy" permission daemon
+amsaccountsd                # Apple Media Services account daemon
+amsengagementd              # Apple Media Services engagement & promotions daemon
+passd                       # Apple Wallet passbook daemon
+newsd                       # Apple News background article pre-fetcher
+watchlistd                  # Apple TV watch list sync daemon
+videosubscriptionsd         # TV app video subscription daemon
+gamecontrollerd             # Game controller USB/Bluetooth daemon
+gamecontrolleragentd        # Game controller user agent
+gamepolicyd                 # Game policy coordinator
+accessoryupdaterd           # MagSafe / Display / Accessory firmware updater
+*UARPUpdaterService*        # Accessory firmware updater services
+fudHelperAgent              # Firmware update device helper agent
+SoftwareUpdateNotificationManager # Software update nagging alert manager
+
+# ------------------------------------------------------------------------------
+# 13. ADVERTISING, ANALYTICS & TELEMETRY DAEMONS
+# (Pure telemetry and ad attribution uploaders)
+# ------------------------------------------------------------------------------
+promotedcontentd            # Apple Search Ads and promoted content delivery
+adprivacyd                  # Apple advertising privacy & attribution engine
+diagnostics_agent           # Apple diagnostic reporting agent
+symptomsd-diag              # Symptoms network diagnostics & telemetry collector
+PerfPowerServices           # Performance & power usage background telemetry
+milod                       # Spatial micro-location tracking daemon
+coresymbolicationd          # Crash and error symbolication server
+deleted_helper              # CacheDelete helper process
+feedbackd                   # Apple Feedback Assistant telemetry daemon
+betaenrollmentagent         # macOS Beta seed enrollment checker
+
+# ------------------------------------------------------------------------------
+# 14. MESSAGING, FACETIME, CALLS & IDENTITY DAEMONS
+# (Heavy SQLite syncing and network listeners for Messages and FaceTime)
+# ------------------------------------------------------------------------------
+imagent                     # iMessage and FaceTime message routing engine
+IMDPersistenceAgent         # iMessage database persistence and query agent
+FTConversationService       # FaceTime conversation coordination service
+*FTConversationService*     # FaceTime conversation service variant
+StatusKitAgent              # Messages & FaceTime status sharing agent
+identityservicesd           # Apple ID / IDS identity and encryption services
+MessagesBlastDoorService    # Messages sandbox security blast door
+MessagesActionExtension     # Messages interactive action extension
+businessservicesd           # Business Chat / Messages for Business daemon
+CMFSyncAgent                # Communications Filter (blocked spam callers) sync
+callservicesd               # Phone and FaceTime call coordination daemon
+CallHistoryPluginHelper     # Phone call history helper
+CallHistorySyncHelper       # Phone call history iCloud sync helper
+
+# ------------------------------------------------------------------------------
+# 15. ACCOUNTS, CLOUD SYNC & CONTENT CACHING
+# (Accounts database manager and background cloud sync daemons)
+# ------------------------------------------------------------------------------
+appleaccountd               # Apple Account user session daemon
+iCloudNotificationAgent     # iCloud push notifications listener
+com.apple.iCloudHelper      # iCloud helper XPC service
+dataaccessd                 # CardDAV/CalDAV/Exchange data access daemon
+exchangesyncd               # Microsoft Exchange synchronization daemon
+exchangenotesd              # Microsoft Exchange notes daemon
+networkserviceproxy         # iCloud Private Relay and network proxy
+AssetCacheLocatorService    # Apple Content Caching locator service
+AssetCacheTetheratorService # Apple Content Caching tethering service
+MailCacheDelete             # Apple Mail cache delete extension
+TVCacheExtension            # Apple TV cache delete extension
+geodMachServiceBridge       # GeoServices Mach IPC bridge
+PasswordBreachAgent         # Safari compromised password alert daemon
+replicatord                 # Duet / CoreDuet replication coordinator
+
+# ------------------------------------------------------------------------------
+# 16. MEDIA, SHORTCUTS, INTELLIGENCE & PERSONAL VOICE
+# ------------------------------------------------------------------------------
+AMPLibraryAgent             # Apple Music / Podcasts library coordinator
+AMPArtworkAgent             # Apple Music artwork fetcher & cacher
+mediasharingd               # Home Sharing / media sharing daemon
+weatherd                    # WeatherKit background weather updater
+voicebankingd               # Personal Voice / Voice Banking training daemon
+axassetsd                   # Accessibility assets background downloader
+SAExtensionOrchestrator     # Siri Analytics extension orchestrator
+SiriSuggestionsBookkeepingService # Siri suggestions bookkeeping service
+CSExattrCryptoService       # CoreSpotlight extended attribute crypto service
+StocksKitService            # Stocks backend service
+ContextService              # ContextKit background service
+CoreThreadCommissionerServiced # Matter / Thread smart home commissioner
+FamilyControlsAgent         # Family Controls & parental restrictions agent
+CategoriesService           # Screen Time application category service
+ManagedSettingsAgent        # Managed Settings agent
+ScreenTimeAgent             # Screen Time enforcement agent
+lockoutagent                # Screen Time downtime lockout agent
+donotdisturbd               # Focus / Do Not Disturb server
+mobiletimerd                # Alarms and timers background daemon
+lockdownmoded               # Apple Lockdown Mode enforcement agent
+progressd                   # Apple ClassKit / Schoolwork background daemon
+CalendarIntentsExtension    # Calendar Siri intents extension
+MENotificationAgent         # Media Extension notification agent
+remotepairingd              # Xcode remote device pairing service
+mdwrite                     # Spotlight metadata attribute writer
