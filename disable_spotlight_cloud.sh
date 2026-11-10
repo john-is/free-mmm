@@ -49,7 +49,6 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
-MAGENTA='\033[0;35m'
 BOLD='\033[1m'
 NC='\033[0m'
 
@@ -513,7 +512,7 @@ disable_all_targets() {
     local domain="$1"
     local entry="$2"
     local label="${entry%%:*}"
-    [[ -z "$label" ]] && continue
+    [[ -z "$label" ]] && return 0
 
     if [[ "$domain" == "system" ]]; then
       if [[ "$has_root" == true ]]; then
@@ -663,7 +662,7 @@ enable_all_targets() {
     local entry="$2"
     local label="${entry%%:*}"
     local plist="${entry#*:}"
-    [[ -z "$label" ]] && continue
+    [[ -z "$label" ]] && return 0
 
     if [[ "$domain" == "system" ]]; then
       if [[ "$has_root" == true ]]; then

@@ -252,6 +252,7 @@ matches_pattern() {
     return 0
   fi
   if [[ "$pattern" == *"*"* || "$pattern" == *"?"* || "$pattern" == *"/"* ]]; then
+    # shellcheck disable=SC2053
     if [[ "$target_comm" == $pattern || "$target_base" == $pattern || "$target_comm" == "$pattern"/* ]]; then
       return 0
     fi

@@ -46,7 +46,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
 BOLD='\033[1m'
@@ -167,7 +166,6 @@ CURRENT_USER=$(whoami)
 CURRENT_UID=$(id -u)
 CONSOLE_UID=$(stat -f '%u' /dev/console 2>/dev/null || echo "")
 TARGET_UID="${SUDO_UID:-${CONSOLE_UID:-$CURRENT_UID}}"
-TARGET_USER="${SUDO_USER:-$(id -nu "$TARGET_UID" 2>/dev/null || echo "$CURRENT_USER")}"
 ACTION="cleanup"
 LOG_FILE="${FREE_MMM_LOG_FILE:-$SCRIPT_DIR/free_memory.log}"
 ENABLE_LOGGING=true
@@ -319,6 +317,7 @@ matches_pattern() {
 
   # 2. Glob / path matching (if pattern contains wildcards * or ? or path delimiter /)
   if [[ "$pattern" == *"*"* || "$pattern" == *"?"* || "$pattern" == *"/"* ]]; then
+    # shellcheck disable=SC2053
     if [[ "$target_comm" == $pattern || "$target_base" == $pattern || "$target_comm" == "$pattern"/* ]]; then
       return 0
     fi
@@ -1133,7 +1132,7 @@ status_bothering_services() {
 
     local is_disabled=false
     local primary_domain="gui"
-    while IFS=":" read -r sdomain slabel splist; do
+    while IFS=":" read -r sdomain slabel _; do
       [[ "$sdomain" == "system" ]] && primary_domain="system"
       local target_list="$gui_disabled"
       [[ "$sdomain" == "system" ]] && target_list="$sys_disabled"

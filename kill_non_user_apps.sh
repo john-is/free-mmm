@@ -44,7 +44,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
 BOLD='\033[1m'
@@ -107,6 +106,7 @@ prompt_confirmation() {
   echo "$answer"
 }
 
+# shellcheck disable=SC2329
 finalize_execution_logging() {
   local exit_code=$?
   trap - EXIT
@@ -177,11 +177,13 @@ matches_pattern() {
   fi
 
   # Path wildcard or prefix match
+  # shellcheck disable=SC2053
   if [[ "$path" == $pattern ]]; then
     return 0
   fi
 
   # Substring or glob match on base name
+  # shellcheck disable=SC2053
   if [[ "$name" == $pattern ]]; then
     return 0
   fi
